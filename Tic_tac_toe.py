@@ -1,12 +1,22 @@
 def print_board(board):
-    for row in board:
-        print(' | '.join(row))
-        print('-' * 9)
+    print('   0   1   2')
+    for i, row in enumerate(board):
+        print(f'{i}  {" | ".join(row)}')
+        if i < len(board) - 1:
+            print('   ' + '-' * 11)
 
 
 def player_move(board, player):
-    move = input(f'Player {player}, enter your move (row and column): ')
-    row, col = map(int, move.split())
+    row = int(input(f'Player {player}, Enter a row number: '))
+    while row > 2 or row < 0:
+        print('Invalid move, Please try again!')
+        row = int(input(f'Player {player}, Enter a row number: '))
+
+    col = int(input(f'Player {player}, Enter a column number: '))
+    while col > 2 or col < 0:
+        print('Invalid move, Please try again!')
+        col = int(input(f'Player {player}, Enter a column number: '))
+
     if board[row][col] == ' ':
         board[row][col] = player
     else:
@@ -32,18 +42,31 @@ def check_tie(board):
     return all(all(square != ' ' for square in row) for row in board)
 
 
+def play_again():
+    while True:
+        playAgain = input('Do you want to play again? Choose yes or no: ').lower()
+        if playAgain == 'yes':
+            play_game()
+        elif playAgain == 'no':
+            print('Ok')
+        break
+
+
 def play_game():
     board = [[' '] * 3 for _ in range(3)]
-    current_player = 'X'
+    current_player = input('Choose your player X or O: ').upper()
     while True:
         print_board(board)
         player_move(board, current_player)
         if check_win(board, current_player):
             print_board(board)
             print(f'Player {current_player} wins!')
+            play_again()
             break
+
         if check_tie(board):
             print("It's a tie!")
+            play_again()
             break
         current_player = 'X' if current_player == 'O' else 'O'
 
